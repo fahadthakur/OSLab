@@ -1,3 +1,6 @@
+## This code is a simulation of the Paging techniques using the First In First Out technique & Least Recently Used Technique ##
+
+
 from queue import Queue
 
 def FIFOPage(pages, capacity):

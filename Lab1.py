@@ -1,3 +1,5 @@
+## This Program is a simulation to show the memory allocation techniques using the First Fit and the Best Fit method ##
+
 memory = [10, 20, 15, 30]  # this is the size of the memory partitions
 program = [5, 30, 10, 40]  # this is the size of the program
 
