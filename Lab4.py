@@ -1,17 +1,13 @@
-# Function to find the need of each process
 def calculateResourcesNeed(resources_need, maximum_resources, allocated_resources, num_processes, num_resources):
-    # Calculating Need of each P
+    # Calculating the resource needed for each process
     for i in range(num_processes):
         for j in range(num_resources):
             # Need of instance = maxm instance -
             # allocated instance
             resources_need[i][j] = maximum_resources[i][j] - allocated_resources[i][j]
 
-        # Function to find the system is in
-
-
-# safe state or not
-def isSafe(processes, available_resources, maximum_resources, allocated_resources):
+def systemSafe(processes, available_resources, maximum_resources, allocated_resources):
+    # checking if the system is in a safe state
     num_processes = processes
     num_resources = len(available_resources)
     resources_need = []
@@ -19,60 +15,53 @@ def isSafe(processes, available_resources, maximum_resources, allocated_resource
         l = []
         for j in range(num_resources):
             l.append(0)
-        resources_need.append(l)
+        resources_need.append(l)    # initialising the resource needed array
 
-    # Function to calculate need matrix 
+    # Function to calculate need matrix
+    # calculating the resource needed for each process to complete its execution
     calculateResourcesNeed(resources_need, maximum_resources, allocated_resources, num_processes, num_resources)
 
     # To Mark the processes as finish
-    finish = [0] * num_processes
+    process_finish = [0] * num_processes  # 0 means that process is not finished,  1 means that process is finished
 
     # To store safe sequence 
     safeSeq = [0] * num_processes
 
     # Make a copy of available resources 
-    total_resources = [0] * num_resources
-    for i in range(num_resources):
-        total_resources[i] = available_resources[i]
+    total_resources = available_resources.copy()
 
-    # While all processes are not finished
-    # or system is not in safe state. 
     count = 0
-    while (count < num_processes):
-        # Find a process which is not finish 
-        # and whose needs can be satisfied 
-        # with current work[] resources. 
+    while (count < num_processes):  # while all processes are not finished executing
         found = False
         for p in range(num_processes):
-            # First check if a process is finished, 
-            # if no, go for next condition 
-            if (finish[p] == 0):
+            # First check if a process is finished, if not then we try to see if the total_resources[] will satisfy the need of that process
+            if (process_finish[p] == 0):
                 print("Currently going over unfinished process: " + str(p))
                 # Check if for all resources 
-                # of current P need is less 
-                # than work
+                # of current process need is less
+                # than total_resources[]
                 for j in range(num_resources):
                     if (resources_need[p][j] > total_resources[j]):
-                        print("Resources needed by process "+ str(p) + " is greater than available resource for that job\n")
+                        print("Resources needed by process "+ str(p) + " is greater than available resource for that job\n"
+                                                                       "--------------------------------------------------\n")
                         break
 
-                # If all needs of p were satisfied. 
+                # If all needs of the process were satisfied.
                 if (j == num_resources - 1):
                     print("All of the needs of process "+ str(p) + " are being satisfied.")
-                    # Add the allocated resources of 
-                    # current P to the available/work 
-                    # resources i.e.free the resources
+                    # deallocate the resources from the current process and add it to the available resources
                     print("Deallocating resources from process " + str(p) + " and adding to the available resources.")
                     for k in range(num_resources):
                         total_resources[k] += allocated_resources[p][k]
                         # Add this process to safe sequence.
                     print("Current available resources : " + str(total_resources))
-                    print("Adding process " + str(p) + " to the safe sequence\n")
+                    print("Adding process " + str(p) + " to the safe sequence\n"
+                                                       "--------------------------------------------------\n")
                     safeSeq[count] = p
                     count += 1
 
                     # Mark this p as finished 
-                    finish[p] = 1
+                    process_finish[p] = 1
 
                     found = True
 
@@ -96,23 +85,24 @@ if __name__ == "__main__":
 
     processes = int(input("Number of processes : "))
     resources = int(input("Number of resources : "))
-    available_resources = [int(i) for i in input ("Available resources : ").split()]
+    available_resources = [int(i) for i in input ("Current Available resources : ").split()]
     print("\nResources allocated for each process")
     allocated_resources = [[int(i) for i in input(f"process {j}: ").split()] for j in range(processes)]
 
     print("\nMaximum resources for each process")
     maximum_resources = [[int(i) for i in input(f"process {j} : ").split()] for j in range(processes)]
 
-    isSafe(processes, available_resources, maximum_resources, allocated_resources)
+    systemSafe(processes, available_resources, maximum_resources, allocated_resources)
 
     # debug
-    # processes = [0, 1, 2, 3, 4]
-    # available_resource = [3, 3, 2]
+    # processes = 4
+    # resources = 3
+    # current_available_resource = [2, 3, 3]
+
+    #allocated_resources = [[0, 1, 0], [2, 0, 0],
+    #          [3, 0, 2], [2, 1, 1]]
+    
     # maximum_resources = [[7, 5, 3], [3, 2, 2],
-    #         [9, 0, 2], [2, 2, 2],
-    #         [4, 3, 3]]
-    # allocated_resources = [[0, 1, 0], [2, 0, 0],
-    #          [3, 0, 2], [2, 1, 1],
-    #          [0, 0, 2]]
+    #         [9, 0, 2], [2, 2, 2]]
 
     # Check system is in safe state or not
